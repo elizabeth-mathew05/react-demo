@@ -5,7 +5,7 @@ const fallbackImg = "https://placehold.co/180x180?text=No+Image";
 const ProductModal = ({ product, closeModal, addToCart, cart }) => {
     if (!product) return null;
     const inCart = cart.some(item => item.id === product.id);
-        const fallbackImg = "https://via.placeholder.com/120x140?text=No+Image";
+        // const fallbackImg = "https://via.placeholder.com/120x140?text=No+Image";
         // Prefer first image from images array, then product.image, then fallback
         const imgSrc =
             Array.isArray(product.images) && product.images.length && typeof product.images[0] === 'string'

@@ -2,7 +2,8 @@ import React from 'react';
 import './CartModal.css';
 
 function CartModal({ cart, onClose, removeFromCart }) {
-  const total = cart.reduce((sum, item) => sum + Math.round(item.price * 85), 0);
+  // Calculate total as sum of (price * quantity) for each item
+  const total = cart.reduce((sum, item) => sum + Math.round(item.price * 85) * (item.quantity || 1), 0);
 
   return (
     <div className='modal-backdrop'>
@@ -26,7 +27,8 @@ function CartModal({ cart, onClose, removeFromCart }) {
                   <li key={item.id} className='cart-item'>
                     <img src={imgSrc} alt={item.title} className='cart-item-image' onError={e => e.target.src = fallbackImg} />
                     <span className='cart-item-title'>{item.title}</span>
-                    <span className='cart-item-price'>{Math.round(item.price * 85)}</span>
+                    <span className='cart-item-price'>₹{Math.round(item.price * 85)} x {item.quantity || 1}</span>
+                    <span className='cart-item-total'> = ₹{Math.round(item.price * 85) * (item.quantity || 1)}</span>
                     <button className='cart-remove-btn' onClick={() => removeFromCart(item.id)}>
                       Remove
                     </button>

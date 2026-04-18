@@ -14,7 +14,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
-  const [message, setMessage] = useState("");
   const [showCartModal, setShowCartModal] = useState(false);
   const [error, setError] = useState(null);
 
@@ -36,12 +35,21 @@ function App() {
     fetchProducts();
   }, []);
 
-  // Add product to cart, show alert if already in cart
-  const addToCart = (product) => {
-    setCart([...cart, product]);
-    setMessage("Successfully added to cart");
-    setTimeout(() => setMessage(""), 1500);
-    closeModal();
+  // Add to cart handler with quantity
+  const handleAddToCart = (product, quantity = 1) => {
+    setCart(prevCart => {
+      const existing = prevCart.find(item => item.id === product.id);
+      if (existing) {
+        // If already in cart, update the quantity to the new selected value
+        return prevCart.map(item =>
+          item.id === product.id
+            ? { ...item, quantity }
+            : item
+        );
+      }
+      // Add new product with selected quantity
+      return [...prevCart, { ...product, quantity }];
+    });
   };
 
   // Remove product from cart
@@ -66,19 +74,6 @@ function App() {
         <div style={{ color: 'red', textAlign: 'center', margin: '16px' }}>{error}</div>
       )}
 
-      {message && (
-        <div style={{
-          background: '#c8e6c9',
-          color: '#256029',
-          borderRadius: 6,
-          padding: '8px 0',
-          fontWeight: 500,
-          textAlign: 'center',
-          margin: '16px auto',
-          maxWidth: 400,
-          boxShadow: '0 2px 8px #a5d6a7',
-        }}>{message}</div>
-      )}
 
       <h1 className="title">Fake Store Shopping App</h1>
 
@@ -87,7 +82,11 @@ function App() {
       ) : (
         <div className="product-grid">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} openModal={openModal} />
+            <ProductCard 
+              key={product.id} 
+              product={{...product, price: Math.round(product.price * 85)}} 
+              openModal={openModal} 
+            />
           ))}
         </div>
       )}
@@ -96,7 +95,7 @@ function App() {
         <ProductModal
           product={selectedProduct}
           closeModal={closeModal}
-          addToCart={addToCart}
+          addToCart={handleAddToCart}
           cart={cart}
         />
       )}
